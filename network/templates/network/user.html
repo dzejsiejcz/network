@@ -1,0 +1,83 @@
+{% extends "network/layout.html" %}
+
+{% load static %}
+
+{% block body %}
+<!-- {% if alert %}
+
+<script type="text/javascript">
+alert("Post created successfully.");
+</script>
+
+{% endif %} -->
+
+<div class="container border rounded" style="padding: 10px; margin: 10px; text-align: center;">
+    <h4>Strona profilowa użytkownika {{ author }}</h4>
+    Obserwujący: {{ followers }}
+</div>
+
+
+{% if user != author %}
+
+    <button id="follow-unfollow" data-user="{{ author.id }}" class="container border rounded" style="padding: 10px; margin: 10px;"></button>
+
+{% endif %}
+
+{% for post in page_obj %} 
+
+    <div id="one_post-{{ post.id }}" class="container border rounded" style="padding: 10px; margin: 10px;">
+
+    <div style="color:rgb(54, 54, 145)"><a href="{% url 'user-page' user=post.user.id %}">{{ post.user }}</a> napisał:
+    </div>
+    <ul id="text-content-{{ post.id }}">{{ post.text }}    </ul>
+    <div>
+    <details>
+        <summary>Data</summary>
+        
+        <p>{{ post.timestamp }}</p>
+
+    </details>
+</div>
+    {% if user == post.user %} 
+        <ul>
+        <button id="edit" data-edit="{{ post.id }}">Edytuj</button>
+        </ul>
+        <ul>
+        <button id="delete" data-delete="{{ post.id }}">Usuń</button>
+        </ul>
+
+{% endif %}
+{% if user.is_authenticated %}
+
+        <div class="container">
+            <div id="lajk" data-cont="{{ post.id }}">
+                <button title="" class="btn btn-outline-dark"  data-like="{{ post.id }}" name="Like" id="like">
+                </button>
+            </div>  
+{% endif %}
+    <div id="liked" data-number="{{ post.id }}"></div>
+    </div>
+</div>
+{% if user.is_authenticated %}
+    <div id="edit-{{ post.id }}" class="edy">
+        <div class="row border border-dark rounded" style="padding: 10px; margin: 10px">
+            <div id="edit-view">
+                <p>Edit Post</p>
+                <form id="edit-form" data-editform="{{ post.id }}">
+                    <textarea class="form-control" id="edit-body-{{ post.id }}">{{ post.text }}</textarea>
+                    <input type="submit" id="edit-button-{{ post.id }}" value="Edit" class="btn btn-primary"/>
+                    <button type="button" id="anuluj-button" data-anuluj="{{ post.id }}" value="Anuluj" class="btn btn-primary">Anuluj</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endif %}
+{% endfor %}
+
+
+
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'network/network.js' %}"></script>
+{% endblock %}
